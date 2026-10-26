@@ -1,18 +1,25 @@
 import { useState, type FC, type FormEvent, type ChangeEvent } from 'react';
-import { Calendar, Clock, Phone, User, Check, AlertCircle, Building2 } from 'lucide-react';
+import { Calendar, Clock, Phone, User, Check, AlertCircle } from 'lucide-react';
 import type { Doctor, BookingFormData } from '../types';
 
 interface BookingFormProps {
     doctor: Doctor;
     initialSlot?: string;
+    defaultPatientName?: string;
     onSubmit: (bookingData: BookingFormData) => void;
     onCancel: () => void;
 }
 
-export const BookingForm: FC<BookingFormProps> = ({ doctor, initialSlot, onSubmit, onCancel }) => {
+export const BookingForm: FC<BookingFormProps> = ({
+    doctor,
+    initialSlot,
+    defaultPatientName = '',
+    onSubmit,
+    onCancel,
+}) => {
     const today = new Date().toISOString().split('T')[0];
 
-    const [patientName, setPatientName] = useState('');
+    const [patientName, setPatientName] = useState(defaultPatientName);
     const [phone, setPhone] = useState('');
     const [date, setDate] = useState(today);
     const [time, setTime] = useState(initialSlot || doctor.availableSlots[0] || '');
@@ -30,11 +37,11 @@ export const BookingForm: FC<BookingFormProps> = ({ doctor, initialSlot, onSubmi
             return;
         }
         if (!date) {
-            setError('გთხოვთ აირჩიოთ ვიზიტის სასურველი თარიღი');
+            setError('გთხოვთ აირჩიოთ ვიზიტის თარიღი');
             return;
         }
         if (!time) {
-            setError('გთხოვთ აირჩიოთ თავისუფალი დროის მონაკვეთი');
+            setError('გთხოვთ აირჩიოთ ვიზიტის დრო');
             return;
         }
 
@@ -55,35 +62,32 @@ export const BookingForm: FC<BookingFormProps> = ({ doctor, initialSlot, onSubmi
                 time,
             });
             setIsSubmitting(false);
-        }, 500);
+        }, 400);
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Doctor Snapshot Card */}
-            <div className="flex items-center gap-3.5 p-3.5 bg-slate-50 border border-slate-200/80 rounded-xl">
+        <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Doctor Snapshot */}
+            <div className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-lg">
                 <img
                     src={doctor.avatar}
                     alt={doctor.name}
-                    className="w-12 h-12 rounded-xl object-cover ring-1 ring-slate-200"
+                    className="w-12 h-12 rounded-lg object-cover ring-1 ring-slate-200 shrink-0"
                 />
                 <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-2">
                         <h4 className="font-semibold text-slate-900 text-sm truncate">{doctor.name}</h4>
-                        <span className="text-[11px] font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200/60 shrink-0">
+                        <span className="text-xs font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 shrink-0">
                             ★ {doctor.rating}
                         </span>
                     </div>
                     <p className="text-xs text-blue-600 font-medium">{doctor.specialty}</p>
-                    <div className="flex items-center gap-1.5 text-[11px] text-slate-500 mt-0.5 truncate">
-                        <Building2 size={11} className="text-slate-400 shrink-0" />
-                        <span className="truncate">{doctor.clinic}</span>
-                    </div>
+                    <p className="text-xs text-slate-500 truncate mt-0.5">{doctor.clinic}</p>
                 </div>
             </div>
 
             {error && (
-                <div className="flex items-center gap-2 p-3 text-xs text-red-700 bg-red-50 border border-red-200/80 rounded-xl animate-in fade-in">
+                <div className="flex items-center gap-2 p-2.5 text-xs text-red-700 bg-red-50 border border-red-200 rounded-lg">
                     <AlertCircle size={15} className="text-red-500 shrink-0" />
                     <span>{error}</span>
                 </div>
@@ -91,11 +95,11 @@ export const BookingForm: FC<BookingFormProps> = ({ doctor, initialSlot, onSubmi
 
             {/* Patient Name */}
             <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wider">
+                <label className="block text-xs font-medium text-slate-700 mb-1">
                     პაციენტის სახელი, გვარი
                 </label>
                 <div className="relative">
-                    <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <User size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                     <input
                         type="text"
                         value={patientName}
@@ -104,19 +108,19 @@ export const BookingForm: FC<BookingFormProps> = ({ doctor, initialSlot, onSubmi
                             if (error) setError('');
                         }}
                         placeholder="მაგ: გიორგი გიორგაძე"
-                        className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all shadow-sm"
+                        className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                         required
                     />
                 </div>
             </div>
 
-            {/* Phone Number */}
+            {/* Phone */}
             <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wider">
+                <label className="block text-xs font-medium text-slate-700 mb-1">
                     საკონტაქტო ტელეფონი
                 </label>
                 <div className="relative">
-                    <Phone size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <Phone size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                     <input
                         type="tel"
                         value={phone}
@@ -125,45 +129,64 @@ export const BookingForm: FC<BookingFormProps> = ({ doctor, initialSlot, onSubmi
                             if (error) setError('');
                         }}
                         placeholder="599 00 00 00"
-                        className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all shadow-sm"
+                        className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                         required
                     />
                 </div>
             </div>
 
-            {/* Date Selection */}
-            <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wider">
-                    ვიზიტის თარიღი
-                </label>
-                <div className="relative">
-                    <Calendar size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-                    <input
-                        type="date"
-                        min={today}
-                        value={date}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                            setDate(e.target.value);
-                            if (error) setError('');
-                        }}
-                        className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all shadow-sm cursor-pointer"
-                        required
-                    />
-                </div>
-            </div>
-
-            {/* Interactive Slot Selector */}
-            <div>
-                <div className="flex items-center justify-between mb-2">
-                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                        თავისუფალი საათები
+            {/* Date & Time */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                    <label className="block text-xs font-medium text-slate-700 mb-1">
+                        ვიზიტის თარიღი
                     </label>
-                    <span className="text-[11px] text-slate-500 flex items-center gap-1">
-                        <Clock size={12} className="text-slate-400" />
-                        ხანგრძლივობა: 30 წთ
-                    </span>
+                    <div className="relative">
+                        <Calendar size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                        <input
+                            type="date"
+                            min={today}
+                            value={date}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                setDate(e.target.value);
+                                if (error) setError('');
+                            }}
+                            className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors cursor-pointer"
+                            required
+                        />
+                    </div>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+
+                <div>
+                    <label className="block text-xs font-medium text-slate-700 mb-1">
+                        სასურველი დრო
+                    </label>
+                    <div className="relative">
+                        <Clock size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                        <select
+                            value={time}
+                            onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                                setTime(e.target.value);
+                                if (error) setError('');
+                            }}
+                            className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors cursor-pointer"
+                        >
+                            {doctor.availableSlots.map((slot) => (
+                                <option key={slot} value={slot}>
+                                    {slot}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            {/* Time Slot Chips */}
+            <div>
+                <label className="block text-xs font-medium text-slate-600 mb-1.5">
+                    ხელმისაწვდომი საათები:
+                </label>
+                <div className="flex flex-wrap gap-1.5">
                     {doctor.availableSlots.map((slot) => {
                         const isSelected = time === slot;
                         return (
@@ -174,13 +197,13 @@ export const BookingForm: FC<BookingFormProps> = ({ doctor, initialSlot, onSubmi
                                     setTime(slot);
                                     if (error) setError('');
                                 }}
-                                className={`py-2 px-3 text-xs font-semibold rounded-xl border transition-all flex items-center justify-center gap-1.5 ${
+                                className={`px-2.5 py-1 text-xs font-medium rounded-md border transition-colors flex items-center gap-1 cursor-pointer ${
                                     isSelected
-                                        ? 'bg-blue-600 text-white border-blue-600 shadow-sm shadow-blue-500/25 ring-2 ring-blue-600/30'
-                                        : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200 hover:border-slate-300'
+                                        ? 'bg-blue-600 text-white border-blue-600'
+                                        : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
                                 }`}
                             >
-                                {isSelected && <Check size={13} className="stroke-[3]" />}
+                                {isSelected && <Check size={12} />}
                                 <span>{slot}</span>
                             </button>
                         );
@@ -189,28 +212,21 @@ export const BookingForm: FC<BookingFormProps> = ({ doctor, initialSlot, onSubmi
             </div>
 
             {/* Actions */}
-            <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+            <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-200">
                 <button
                     type="button"
                     onClick={onCancel}
                     disabled={isSubmitting}
-                    className="px-4 py-2.5 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-colors"
+                    className="px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
                 >
                     გაუქმება
                 </button>
                 <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="px-5 py-2.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:opacity-50 rounded-xl shadow-sm shadow-blue-600/25 hover:shadow transition-all flex items-center gap-2 cursor-pointer disabled:cursor-not-allowed"
+                    className="px-4 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:opacity-50 rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed"
                 >
-                    {isSubmitting ? (
-                        <>
-                            <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                            <span>ჯავშანი მუშავდება...</span>
-                        </>
-                    ) : (
-                        <span>ჯავშნის დადასტურება</span>
-                    )}
+                    {isSubmitting ? 'მუშავდება...' : 'ჯავშნის დადასტურება'}
                 </button>
             </div>
         </form>

@@ -4,16 +4,14 @@ import {
   Calendar,
   Clock,
   Trash2,
-  Menu,
   X,
   Building2,
   MapPin,
   CheckCircle2,
-  ShieldCheck,
-  Award,
   AlertTriangle,
-  ArrowRight,
-  HeartPulse,
+  User,
+  Edit2,
+  Check,
 } from 'lucide-react';
 import { INITIAL_DOCTORS, SPECIALTIES } from './data/doctors';
 import type { Doctor, Appointment, BookingFormData, ToastNotification } from './types';
@@ -27,10 +25,16 @@ export default function App() {
   const [selectedSpecialty, setSelectedSpecialty] = useState<string>('ყველა');
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<string | undefined>(undefined);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [recentlyAddedId, setRecentlyAddedId] = useState<string | null>(null);
   const [toast, setToast] = useState<ToastNotification | null>(null);
   const [appointmentToDelete, setAppointmentToDelete] = useState<Appointment | null>(null);
+
+  // Dynamic User Profile
+  const [userName, setUserName] = useState<string>(() => {
+    return localStorage.getItem('medibook_user') || '';
+  });
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [tempUserName, setTempUserName] = useState('');
 
   // LocalStorage-დან ჯავშნების წამოღება
   const [appointments, setAppointments] = useState<Appointment[]>(() => {
@@ -96,15 +100,13 @@ export default function App() {
     setRecentlyAddedId(newAppointment.id);
     handleCloseBooking();
 
-    // Trigger toast notification
     setToast({
       id: 'toast-' + Date.now(),
-      title: 'ვიზიტი წარმატებით დაიჯავშნა!',
+      title: 'ვიზიტი წარმატებით დაიჯავშნა',
       message: `${data.doctorName} • ${data.date}, ${data.time}`,
       type: 'success',
     });
 
-    // Reset recently added animation trigger after 3s
     setTimeout(() => {
       setRecentlyAddedId(null);
     }, 3000);
@@ -116,21 +118,40 @@ export default function App() {
     setAppointmentToDelete(null);
   };
 
+  const handleSaveProfile = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = tempUserName.trim();
+    setUserName(trimmed);
+    if (trimmed) {
+      localStorage.setItem('medibook_user', trimmed);
+    } else {
+      localStorage.removeItem('medibook_user');
+    }
+    setIsProfileModalOpen(false);
+  };
+
+  const getInitials = (name: string) => {
+    if (!name.trim()) return 'მ';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
       {/* Toast Notification */}
       {toast && (
-        <div className="fixed top-5 right-5 z-50 flex items-start gap-3 p-4 bg-white/95 backdrop-blur-md border border-emerald-200/80 rounded-2xl shadow-xl shadow-emerald-500/10 text-sm max-w-sm animate-in slide-in-from-top-3 duration-200">
-          <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-200/60">
-            <CheckCircle2 size={18} />
+        <div className="fixed top-4 right-4 z-50 flex items-start gap-3 p-4 bg-white border border-slate-200 rounded-xl shadow-lg text-sm max-w-sm">
+          <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-200">
+            <CheckCircle2 size={16} />
           </div>
           <div className="flex-1 min-w-0 pt-0.5">
-            <h5 className="font-semibold text-slate-900 text-xs tracking-tight">{toast.title}</h5>
+            <h5 className="font-semibold text-slate-900 text-xs">{toast.title}</h5>
             <p className="text-xs text-slate-600 mt-0.5 truncate">{toast.message}</p>
           </div>
           <button
             onClick={() => setToast(null)}
-            className="p-1 text-slate-400 hover:text-slate-600 rounded-lg transition-colors"
+            className="p-1 text-slate-400 hover:text-slate-600 rounded transition-colors"
             aria-label="დახურვა"
           >
             <X size={14} />
@@ -139,268 +160,203 @@ export default function App() {
       )}
 
       {/* Header */}
-      <header className="sticky top-0 z-30 backdrop-blur-md bg-white/85 border-b border-slate-200/80 transition-all">
+      <header className="sticky top-0 z-30 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-xl transition-colors"
-              aria-label="მენიუს გახსნა"
-            >
-              {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
-
-            {/* Brand Logo: Squircle Cross */}
-            <div className="flex items-center gap-2.5 cursor-pointer select-none">
-              <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-sm shadow-blue-500/25 ring-1 ring-blue-700/30">
-                <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current" aria-hidden="true">
-                  <path d="M10.5 4a1.5 1.5 0 0 1 3 0v5.5H19a1.5 1.5 0 0 1 0 3h-5.5V18a1.5 1.5 0 0 1-3 0v-5.5H5a1.5 1.5 0 0 1 0-3h5.5V4z" />
-                </svg>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-lg font-bold tracking-tight text-slate-900">MediBook</span>
-                <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200/60">
-                  Clinical
-                </span>
-              </div>
+          {/* Logo */}
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
+              <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current" aria-hidden="true">
+                <path d="M10.5 4a1.5 1.5 0 0 1 3 0v5.5H19a1.5 1.5 0 0 1 0 3h-5.5V18a1.5 1.5 0 0 1-3 0v-5.5H5a1.5 1.5 0 0 1 0-3h5.5V4z" />
+              </svg>
             </div>
+            <span className="text-lg font-bold tracking-tight text-slate-900">MediBook</span>
           </div>
 
-          {/* System Status Pill & Profile */}
-          <div className="flex items-center gap-4">
-            <div className="hidden lg:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/60 text-[11px] font-medium text-emerald-700">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>სისტემა აქტიურია • 24/7 მხარდაჭერა</span>
-            </div>
-
+          {/* Right Header Navigation & Dynamic User Profile */}
+          <div className="flex items-center gap-3">
             <a
               href="#my-appointments"
-              className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors flex items-center gap-1.5"
+              className="text-xs font-medium px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors flex items-center gap-1.5"
             >
               <Calendar size={14} className="text-slate-500" />
               <span className="hidden sm:inline">ჯავშნები:</span>
               <strong className="text-blue-600 font-bold">{appointments.length}</strong>
             </a>
 
-            <div className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-sm">
-              ნნ
-            </div>
+            {/* Dynamic User Profile Button */}
+            {userName ? (
+              <button
+                onClick={() => {
+                  setTempUserName(userName);
+                  setIsProfileModalOpen(true);
+                }}
+                className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-colors text-xs cursor-pointer"
+                title="პროფილის რედაქტირება"
+              >
+                <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-[11px]">
+                  {getInitials(userName)}
+                </div>
+                <span className="font-medium text-slate-800 max-w-[120px] truncate hidden sm:inline">
+                  {userName}
+                </span>
+                <Edit2 size={12} className="text-slate-400 hidden sm:inline" />
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  setTempUserName('');
+                  setIsProfileModalOpen(true);
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 transition-colors text-xs font-medium cursor-pointer"
+              >
+                <User size={14} />
+                <span>მომხმარებელი</span>
+              </button>
+            )}
           </div>
         </div>
       </header>
 
-      {/* Main Content Layout */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full space-y-8">
-        {/* Hero Section */}
-        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-blue-50/70 via-slate-50 to-white border border-slate-200/70 p-6 sm:p-10 shadow-sm">
-          <div className="max-w-3xl space-y-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100/70 border border-blue-200 text-blue-800 text-xs font-semibold">
-              <ShieldCheck size={14} className="text-blue-600" />
-              <span>ევროპული სტანდარტის სამედიცინო სერვისი</span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
-              იპოვეთ საუკეთესო ექიმი და დაჯავშნეთ ვიზიტი ონლაინ
-            </h2>
-            <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-              გაეცანით ექიმების პროფილებს, გადაამოწმეთ ხელმისაწვდომი საათები და მიიღეთ დადასტურება წამებში.
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex-1 w-full space-y-6">
+        {/* Page Title & Intro */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-slate-200">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+              ექიმების კატალოგი
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+              მოძებნეთ ექიმი სპეციალობის მიხედვით და დაჯავშნეთ ვიზიტი მარტივად.
             </p>
           </div>
 
-          {/* Quick Metrics */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-8 pt-6 border-t border-slate-200/60">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100 shrink-0">
-                <HeartPulse size={18} />
-              </div>
-              <div>
-                <p className="text-xs text-slate-500 font-medium">სპეციალისტები</p>
-                <p className="text-sm font-bold text-slate-900">100% ვერიფიცირებული</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 shrink-0">
-                <Award size={18} />
-              </div>
-              <div>
-                <p className="text-xs text-slate-500 font-medium">საშუალო რეიტინგი</p>
-                <p className="text-sm font-bold text-slate-900">★ 4.9 / 5.0</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100 shrink-0">
-                <Clock size={18} />
-              </div>
-              <div>
-                <p className="text-xs text-slate-500 font-medium">დაჯავშნის დრო</p>
-                <p className="text-sm font-bold text-slate-900">&lt; 30 წამი</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center border border-purple-100 shrink-0">
-                <ShieldCheck size={18} />
-              </div>
-              <div>
-                <p className="text-xs text-slate-500 font-medium">მონაცემთა დაცვა</p>
-                <p className="text-sm font-bold text-slate-900">GDPR / ISO 27001</p>
-              </div>
-            </div>
+          {/* Search Box */}
+          <div className="relative w-full sm:w-72">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="მოძებნეთ ექიმი, სპეციალობა..."
+              className="w-full pl-9 pr-8 py-2 bg-white border border-slate-300 rounded-lg text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm('')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                aria-label="ძიების გასუფთავება"
+              >
+                <X size={14} />
+              </button>
+            )}
           </div>
-        </section>
+        </div>
 
-        {/* Filter & Search Bar */}
-        <section className="space-y-4">
-          <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
-            {/* Search Input */}
-            <div className="relative flex-1 max-w-lg">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="მოძებნეთ ექიმი, სპეციალობა, კლინიკა ან უბანი..."
-                className="w-full pl-10 pr-9 py-2.5 bg-white border border-slate-200/90 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 text-sm shadow-sm transition-all"
-              />
-              {searchTerm && (
-                <button
-                  onClick={() => setSearchTerm('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                  aria-label="ძიების გასუფთავება"
-                >
-                  <X size={16} />
-                </button>
-              )}
-            </div>
+        {/* Specialty Filter Buttons */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+          {SPECIALTIES.map((spec) => {
+            const isSelected = selectedSpecialty === spec;
+            const count =
+              spec === 'ყველა'
+                ? doctors.length
+                : doctors.filter((d) => d.specialty === spec).length;
 
-            {/* Results Counter */}
-            <div className="text-xs text-slate-500 font-medium self-end sm:self-center">
-              ნაპოვნია <strong className="text-slate-900">{filteredDoctors.length}</strong> ექიმი
-            </div>
-          </div>
-
-          {/* Specialty Pills */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-            {SPECIALTIES.map((spec) => {
-              const isSelected = selectedSpecialty === spec;
-              const count =
-                spec === 'ყველა'
-                  ? doctors.length
-                  : doctors.filter((d) => d.specialty === spec).length;
-
-              return (
-                <button
-                  key={spec}
-                  onClick={() => setSelectedSpecialty(spec)}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
-                    isSelected
-                      ? 'bg-slate-900 text-white shadow-sm ring-1 ring-slate-900'
-                      : 'bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-slate-200/80'
+            return (
+              <button
+                key={spec}
+                onClick={() => setSelectedSpecialty(spec)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors flex items-center gap-1.5 cursor-pointer ${
+                  isSelected
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                }`}
+              >
+                <span>{spec}</span>
+                <span
+                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-semibold ${
+                    isSelected ? 'bg-blue-700 text-white' : 'bg-slate-100 text-slate-500'
                   }`}
                 >
-                  <span>{spec}</span>
-                  <span
-                    className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
-                      isSelected ? 'bg-slate-700 text-white' : 'bg-slate-100 text-slate-500'
-                    }`}
-                  >
-                    {count}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </section>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
 
-        {/* Doctor Catalog Grid */}
+        {/* Doctor Grid */}
         <section>
           {filteredDoctors.length === 0 ? (
-            <div className="bg-white border border-slate-200/80 rounded-2xl p-12 text-center max-w-md mx-auto space-y-3">
-              <div className="w-12 h-12 mx-auto rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center">
-                <Search size={22} />
-              </div>
-              <h3 className="font-bold text-slate-800 text-base">ექიმი ვერ მოიძებნა</h3>
+            <div className="bg-white border border-slate-200 rounded-xl p-10 text-center max-w-md mx-auto space-y-2">
+              <Search size={24} className="mx-auto text-slate-400" />
+              <h3 className="font-semibold text-slate-800 text-sm">ექიმი ვერ მოიძებნა</h3>
               <p className="text-xs text-slate-500">
-                სცადეთ სხვა საძიებო სიტყვა ან შეცვალეთ სპეციალობის ფილტრი.
+                სცადეთ სხვა საძიებო სიტყვა ან გაასუფთავეთ ფილტრი.
               </p>
               <button
                 onClick={() => {
                   setSearchTerm('');
                   setSelectedSpecialty('ყველა');
                 }}
-                className="mt-2 text-xs font-semibold text-blue-600 hover:text-blue-700 underline"
+                className="text-xs font-medium text-blue-600 hover:underline pt-2 inline-block cursor-pointer"
               >
                 ფილტრების გასუფთავება
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {filteredDoctors.map((doc) => (
                 <article
                   key={doc.id}
-                  className="group relative bg-white border border-slate-200/80 hover:border-blue-400/90 rounded-2xl p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between overflow-hidden"
+                  className="bg-white border border-slate-200 hover:border-slate-300 rounded-xl p-4 shadow-sm hover:shadow transition-shadow flex flex-col justify-between"
                 >
                   <div>
-                    {/* Doctor Portrait Header */}
-                    <div className="relative h-52 w-full rounded-xl overflow-hidden bg-slate-100 mb-4 ring-1 ring-slate-200/60">
+                    {/* Portrait & Rating */}
+                    <div className="relative h-44 w-full rounded-lg overflow-hidden bg-slate-100 mb-3 border border-slate-100">
                       <img
                         src={doc.avatar}
                         alt={doc.name}
-                        className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                        className="w-full h-full object-cover object-top"
                         loading="lazy"
                       />
-                      {/* Availability Badge */}
-                      <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 bg-white/95 backdrop-blur-md rounded-lg text-[11px] font-semibold text-emerald-700 shadow-sm border border-emerald-100/80">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                        <span>ხელმისაწვდომია დღეს</span>
-                      </div>
-
-                      {/* Rating Badge */}
-                      <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-white/95 backdrop-blur-md rounded-lg text-xs font-bold text-slate-800 shadow-sm border border-slate-100">
+                      <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 bg-white/95 rounded text-xs font-bold text-slate-800 shadow-sm border border-slate-200">
                         <span className="text-amber-500">★</span>
                         <span>{doc.rating.toFixed(1)}</span>
                       </div>
                     </div>
 
-                    {/* Doctor Info */}
-                    <div className="space-y-1">
-                      <h3 className="font-bold text-base text-slate-900 group-hover:text-blue-600 transition-colors">
-                        {doc.name}
-                      </h3>
-                      <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide">
-                        {doc.specialty}
-                      </p>
+                    {/* Name & Specialty */}
+                    <div>
+                      <h3 className="font-bold text-base text-slate-900">{doc.name}</h3>
+                      <p className="text-xs font-semibold text-blue-600 mt-0.5">{doc.specialty}</p>
                     </div>
 
-                    {/* Clinic and Meta details */}
-                    <div className="mt-3.5 space-y-1.5 text-xs text-slate-500 border-t border-slate-100 pt-3">
-                      <div className="flex items-center gap-2 truncate">
+                    {/* Clinic, Location, Experience */}
+                    <div className="mt-2.5 pt-2.5 border-t border-slate-100 space-y-1 text-xs text-slate-500">
+                      <div className="flex items-center gap-1.5 truncate">
                         <Building2 size={13} className="text-slate-400 shrink-0" />
-                        <span className="text-slate-700 font-medium truncate">{doc.clinic}</span>
+                        <span className="truncate">{doc.clinic}</span>
                       </div>
-                      <div className="flex items-center gap-2 truncate">
+                      <div className="flex items-center gap-1.5 truncate">
                         <MapPin size={13} className="text-slate-400 shrink-0" />
                         <span className="truncate">{doc.location}</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Award size={13} className="text-slate-400 shrink-0" />
-                        <span>გამოცდილება: {doc.experience}</span>
-                      </div>
+                      <p className="text-slate-600 font-medium">
+                        გამოცდილება: <span className="font-normal">{doc.experience}</span>
+                      </p>
                     </div>
 
-                    {/* Interactive Time Slots */}
-                    <div className="mt-4 pt-3 border-t border-slate-100">
-                      <p className="text-[11px] font-semibold text-slate-600 mb-2 flex items-center justify-between">
-                        <span>თავისუფალი საათები:</span>
-                        <span className="text-[10px] text-blue-600 font-normal">დააჭირეთ სასურველ დროს</span>
+                    {/* Available Slots */}
+                    <div className="mt-3 pt-2.5 border-t border-slate-100">
+                      <p className="text-[11px] font-medium text-slate-500 mb-1.5">
+                        თავისუფალი საათები:
                       </p>
                       <div className="flex flex-wrap gap-1.5">
                         {doc.availableSlots.map((slot) => (
                           <button
                             key={slot}
                             onClick={() => handleOpenBooking(doc, slot)}
-                            className="px-2.5 py-1 text-xs font-medium bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 hover:border-blue-300 border border-slate-200/80 rounded-lg transition-colors cursor-pointer"
+                            className="px-2 py-0.5 text-xs bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 rounded transition-colors cursor-pointer"
                             title={`დაჯავშნა ${slot}-ზე`}
                           >
                             {slot}
@@ -410,14 +366,13 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* Primary Booking Button */}
+                  {/* Booking Button */}
                   <button
                     onClick={() => handleOpenBooking(doc)}
-                    className="mt-5 w-full py-2.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-xs font-semibold rounded-xl shadow-sm shadow-blue-500/20 hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    className="mt-4 w-full py-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     <Calendar size={14} />
                     <span>ვიზიტის დაჯავშნა</span>
-                    <ArrowRight size={14} className="opacity-70 group-hover:translate-x-0.5 transition-transform" />
                   </button>
                 </article>
               ))}
@@ -426,38 +381,36 @@ export default function App() {
         </section>
 
         {/* Appointments Table Section */}
-        <section id="my-appointments" className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-5 pb-3 border-b border-slate-100">
+        <section id="my-appointments" className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
             <div>
-              <h2 className="text-lg font-bold text-slate-900 tracking-tight">ჩემი ჯავშნები</h2>
-              <p className="text-xs text-slate-500 mt-0.5">აქტიური სამედიცინო ვიზიტების სრული რეესტრი</p>
+              <h2 className="text-base sm:text-lg font-bold text-slate-900">ჩემი ჯავშნები</h2>
+              <p className="text-xs text-slate-500">თქვენს მიერ დაჯავშნილი ვიზიტების სია</p>
             </div>
-            <span className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 border border-blue-200/60">
+            <span className="text-xs font-semibold px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
               {appointments.length} ჯავშანი
             </span>
           </div>
 
           {appointments.length === 0 ? (
-            <div className="text-center py-10 space-y-2">
-              <div className="w-10 h-10 mx-auto rounded-full bg-slate-100 text-slate-400 flex items-center justify-center">
-                <Calendar size={18} />
-              </div>
+            <div className="text-center py-8 space-y-1">
+              <Calendar size={22} className="mx-auto text-slate-400" />
               <p className="text-sm font-medium text-slate-700">აქტიური ჯავშნები არ გაქვთ</p>
-              <p className="text-xs text-slate-400 max-w-sm mx-auto">
-                აირჩიეთ სასურველი სპეციალისტი ზემოთ მოცემული სიიდან და დაჯავშნეთ ვიზიტი.
+              <p className="text-xs text-slate-400">
+                დაჯავშნეთ ვიზიტი ზემოთ მოცემული სიიდან.
               </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
-                  <tr className="border-b border-slate-200 text-slate-500 text-[11px] uppercase tracking-wider font-semibold">
-                    <th className="pb-3 pl-2">ექიმი და კლინიკა</th>
-                    <th className="pb-3">პაციენტი</th>
-                    <th className="pb-3">თარიღი</th>
-                    <th className="pb-3">დრო</th>
-                    <th className="pb-3">სტატუსი</th>
-                    <th className="pb-3 pr-2 text-right">მოქმედება</th>
+                  <tr className="border-b border-slate-200 text-slate-500 text-xs font-medium">
+                    <th className="pb-2.5 pl-1">ექიმი</th>
+                    <th className="pb-2.5">პაციენტი</th>
+                    <th className="pb-2.5">თარიღი</th>
+                    <th className="pb-2.5">დრო</th>
+                    <th className="pb-2.5">სტატუსი</th>
+                    <th className="pb-2.5 pr-1 text-right">მოქმედება</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -468,20 +421,20 @@ export default function App() {
                       <tr
                         key={apt.id}
                         className={`transition-colors ${
-                          isNew ? 'animate-highlight bg-blue-50/60' : 'even:bg-slate-50/40 hover:bg-slate-50'
+                          isNew ? 'bg-blue-50/70' : 'hover:bg-slate-50'
                         }`}
                       >
                         {/* Doctor Column */}
-                        <td className="py-3.5 pl-2">
-                          <div className="flex items-center gap-3">
+                        <td className="py-3 pl-1">
+                          <div className="flex items-center gap-2.5">
                             {apt.doctorAvatar ? (
                               <img
                                 src={apt.doctorAvatar}
                                 alt={apt.doctorName}
-                                className="w-9 h-9 rounded-xl object-cover ring-1 ring-slate-200 shrink-0"
+                                className="w-8 h-8 rounded-lg object-cover ring-1 ring-slate-200 shrink-0"
                               />
                             ) : (
-                              <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-xs shrink-0">
+                              <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-xs shrink-0">
                                 Dr
                               </div>
                             )}
@@ -491,51 +444,50 @@ export default function App() {
                               </p>
                               <p className="text-[11px] text-blue-600 font-medium truncate">
                                 {apt.specialty}
-                                {apt.clinic && <span className="text-slate-400 font-normal"> • {apt.clinic}</span>}
                               </p>
                             </div>
                           </div>
                         </td>
 
                         {/* Patient Column */}
-                        <td className="py-3.5 text-xs text-slate-700">
+                        <td className="py-3 text-xs text-slate-700">
                           <p className="font-semibold text-slate-900">{apt.patientName}</p>
                           <p className="text-slate-400 text-[11px]">{apt.phone}</p>
                         </td>
 
                         {/* Date Column */}
-                        <td className="py-3.5 text-xs text-slate-700">
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-medium">
+                        <td className="py-3 text-xs text-slate-700">
+                          <span className="inline-flex items-center gap-1 text-slate-700 font-medium">
                             <Calendar size={13} className="text-slate-400" />
                             {apt.date}
                           </span>
                         </td>
 
                         {/* Time Column */}
-                        <td className="py-3.5 text-xs text-slate-700">
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-medium">
+                        <td className="py-3 text-xs text-slate-700">
+                          <span className="inline-flex items-center gap-1 text-slate-700 font-medium">
                             <Clock size={13} className="text-slate-400" />
                             {apt.time}
                           </span>
                         </td>
 
                         {/* Status Column */}
-                        <td className="py-3.5">
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                        <td className="py-3">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <Check size={11} />
                             დადასტურებული
                           </span>
                         </td>
 
                         {/* Delete Action */}
-                        <td className="py-3.5 pr-2 text-right">
+                        <td className="py-3 pr-1 text-right">
                           <button
                             onClick={() => setAppointmentToDelete(apt)}
-                            className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors cursor-pointer"
                             title="ჯავშნის გაუქმება"
                             aria-label="ჯავშნის გაუქმება"
                           >
-                            <Trash2 size={16} />
+                            <Trash2 size={15} />
                           </button>
                         </td>
                       </tr>
@@ -546,33 +498,93 @@ export default function App() {
             </div>
           )}
         </section>
-      </div>
+      </main>
 
       {/* Footer */}
-      <footer className="mt-auto border-t border-slate-200/80 bg-white py-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-slate-800">MediBook Clinical Systems</span>
-            <span>•</span>
-            <span>ვერსია 2.4</span>
-          </div>
-          <p className="text-center sm:text-right">
-            გადაუდებელი შემთხვევებისთვის დარეკეთ: <strong className="text-rose-600">112</strong>
-          </p>
+      <footer className="mt-auto border-t border-slate-200 bg-white py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
+          <p>MediBook — სამედიცინო ჯავშნების სისტემა</p>
+          <p>დამზადებულია React 19 & TypeScript-ზე</p>
         </div>
       </footer>
+
+      {/* User Profile Modal */}
+      <Modal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        title="მომხმარებლის პროფილი"
+        subtitle="მიუთითეთ თქვენი სახელი და გვარი ჯავშნების გასამარტივებლად"
+      >
+        <form onSubmit={handleSaveProfile} className="space-y-4">
+          <div>
+            <label className="block text-xs font-medium text-slate-700 mb-1">
+              თქვენი სახელი, გვარი
+            </label>
+            <div className="relative">
+              <User size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                value={tempUserName}
+                onChange={(e) => setTempUserName(e.target.value)}
+                placeholder="მაგ: გიორგი გიორგაძე"
+                className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                autoFocus
+              />
+            </div>
+            <p className="text-[11px] text-slate-400 mt-1">
+              ეს სახელი ავტომატურად ჩაიწერება ვიზიტის დაჯავშნის ფორმაში.
+            </p>
+          </div>
+
+          <div className="flex items-center justify-between pt-3 border-t border-slate-200">
+            {userName ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setUserName('');
+                  setTempUserName('');
+                  localStorage.removeItem('medibook_user');
+                  setIsProfileModalOpen(false);
+                }}
+                className="text-xs text-rose-600 hover:text-rose-700 hover:underline cursor-pointer"
+              >
+                პროფილის გასუფთავება
+              </button>
+            ) : (
+              <div />
+            )}
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setIsProfileModalOpen(false)}
+                className="px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg cursor-pointer"
+              >
+                გაუქმება
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg cursor-pointer"
+              >
+                შენახვა
+              </button>
+            </div>
+          </div>
+        </form>
+      </Modal>
 
       {/* Booking Modal */}
       <Modal
         isOpen={!!selectedDoctor}
         onClose={handleCloseBooking}
         title="ვიზიტის დაჯავშნა"
-        subtitle="შეავსეთ ფორმა ექიმთან კონსულტაციის დასაჯავშნად"
+        subtitle="შეავსეთ ფორმა ექიმთან ვიზიტის დასაჯავშნად"
       >
         {selectedDoctor && (
           <BookingForm
             doctor={selectedDoctor}
             initialSlot={selectedSlot}
+            defaultPatientName={userName}
             onSubmit={handleBooking}
             onCancel={handleCloseBooking}
           />
@@ -584,23 +596,23 @@ export default function App() {
         isOpen={!!appointmentToDelete}
         onClose={() => setAppointmentToDelete(null)}
         title="ჯავშნის გაუქმება"
-        subtitle="დაადასტურეთ თქვენი გადაწყვეტილება"
+        subtitle="დაადასტურეთ ჯავშნის გაუქმება"
       >
         {appointmentToDelete && (
           <div className="space-y-4">
-            <div className="flex items-start gap-3 p-3.5 bg-rose-50 border border-rose-200/80 rounded-xl text-rose-800 text-xs">
-              <AlertTriangle size={18} className="text-rose-600 shrink-0 mt-0.5" />
+            <div className="flex items-start gap-2.5 p-3 bg-rose-50 border border-rose-200 rounded-lg text-rose-800 text-xs">
+              <AlertTriangle size={16} className="text-rose-600 shrink-0 mt-0.5" />
               <div>
                 <p className="font-semibold">ნამდვილად გსურთ ჯავშნის გაუქმება?</p>
-                <p className="mt-1 text-rose-700">
-                  გაუქმების შემდეგ დროის მონაკვეთი კვლავ გახდება ხელმისაწვდომი სხვა პაციენტებისთვის.
+                <p className="mt-0.5 text-rose-700">
+                  გაუქმებული ჯავშნის აღდგენა შეუძლებელია.
                 </p>
               </div>
             </div>
 
-            <div className="p-3 bg-slate-50 rounded-xl text-xs space-y-1 text-slate-600 border border-slate-200/80">
+            <div className="p-3 bg-slate-50 rounded-lg text-xs space-y-1 text-slate-600 border border-slate-200">
               <p>
-                ექიმი: <strong className="text-slate-900">{appointmentToDelete.doctorName}</strong> ({appointmentToDelete.specialty})
+                ექიმი: <strong className="text-slate-900">{appointmentToDelete.doctorName}</strong>
               </p>
               <p>
                 პაციენტი: <strong className="text-slate-900">{appointmentToDelete.patientName}</strong>
@@ -610,18 +622,18 @@ export default function App() {
               </p>
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-2">
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-200">
               <button
                 type="button"
                 onClick={() => setAppointmentToDelete(null)}
-                className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+                className="px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg cursor-pointer"
               >
-                უკან დაბრუნება
+                უკან
               </button>
               <button
                 type="button"
                 onClick={confirmDeleteAppointment}
-                className="px-4 py-2 text-xs font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-xl transition-colors shadow-sm cursor-pointer"
+                className="px-4 py-1.5 text-xs font-medium text-white bg-rose-600 hover:bg-rose-700 rounded-lg cursor-pointer"
               >
                 დიახ, გაუქმება
               </button>
