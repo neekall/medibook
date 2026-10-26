@@ -3,7 +3,7 @@ import type { Doctor } from '../types';
 export const INITIAL_DOCTORS: Doctor[] = [
     {
         id: 'doc-1',
-        name: 'Dr. ნინო ბერიძე',
+        name: 'ნინო ბერიძე',
         specialty: 'კარდიოლოგი',
         rating: 4.9,
         experience: '12 წელი',
@@ -14,7 +14,7 @@ export const INITIAL_DOCTORS: Doctor[] = [
     },
     {
         id: 'doc-2',
-        name: 'Dr. გიორგი მაისურაძე',
+        name: 'გიორგი მაისურაძე',
         specialty: 'ნევროლოგი',
         rating: 4.8,
         experience: '9 წელი',
@@ -25,7 +25,7 @@ export const INITIAL_DOCTORS: Doctor[] = [
     },
     {
         id: 'doc-3',
-        name: 'Dr. თამარ კაპანაძე',
+        name: 'თამარ კაპანაძე',
         specialty: 'პედიატრი',
         rating: 5.0,
         experience: '15 წელი',
@@ -36,7 +36,7 @@ export const INITIAL_DOCTORS: Doctor[] = [
     },
     {
         id: 'doc-4',
-        name: 'Dr. ეკატერინე ჯაფარიძე',
+        name: 'ეკატერინე ჯაფარიძე',
         specialty: 'ენდოკრინოლოგი',
         rating: 4.9,
         experience: '11 წელი',
@@ -47,7 +47,7 @@ export const INITIAL_DOCTORS: Doctor[] = [
     },
     {
         id: 'doc-5',
-        name: 'Dr. დავით ლომიძე',
+        name: 'დავით ლომიძე',
         specialty: 'თერაპევტი',
         rating: 4.7,
         experience: '8 წელი',
@@ -58,7 +58,7 @@ export const INITIAL_DOCTORS: Doctor[] = [
     },
     {
         id: 'doc-6',
-        name: 'Dr. ლევან ყიფიანი',
+        name: 'ლევან ყიფიანი',
         specialty: 'ორთოპედი',
         rating: 4.9,
         experience: '14 წელი',
@@ -66,6 +66,39 @@ export const INITIAL_DOCTORS: Doctor[] = [
         location: 'თბილისი, ისანი',
         avatar: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&q=80&w=600',
         availableSlots: ['09:00', '11:00', '14:00', '16:30'],
+    },
+    {
+        id: 'doc-7',
+        name: 'ანა ჩხეიძე',
+        specialty: 'ოფთალმოლოგი',
+        rating: 4.9,
+        experience: '10 წელი',
+        clinic: 'თვალის ეროვნული კლინიკა',
+        location: 'თბილისი, ჩუღურეთი',
+        avatar: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=600',
+        availableSlots: ['09:30', '11:00', '14:30', '16:00'],
+    },
+    {
+        id: 'doc-8',
+        name: 'ირაკლი კვარაცხელია',
+        specialty: 'დერმატოლოგი',
+        rating: 4.8,
+        experience: '13 წელი',
+        clinic: 'კანისა და ვენსნეულებათა ინსტიტუტი',
+        location: 'თბილისი, ვაკე',
+        avatar: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=600',
+        availableSlots: ['10:00', '12:00', '15:00', '17:30'],
+    },
+    {
+        id: 'doc-9',
+        name: 'მარიამ გელოვანი',
+        specialty: 'გასტროენტეროლოგი',
+        rating: 5.0,
+        experience: '12 წელი',
+        clinic: 'კავკასიის მედიცინის ცენტრი',
+        location: 'თბილისი, საბურთალო',
+        avatar: 'https://images.unsplash.com/photo-1527613426441-4da17471b66d?auto=format&fit=crop&q=80&w=600',
+        availableSlots: ['10:30', '13:00', '15:30', '16:30'],
     },
 ];
 
@@ -77,4 +110,7 @@ export const SPECIALTIES = [
     'ენდოკრინოლოგი',
     'თერაპევტი',
     'ორთოპედი',
+    'ოფთალმოლოგი',
+    'დერმატოლოგი',
+    'გასტროენტეროლოგი',
 ] as const;

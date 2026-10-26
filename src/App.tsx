@@ -435,7 +435,7 @@ export default function App() {
                               />
                             ) : (
                               <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-xs shrink-0">
-                                Dr
+                                {getInitials(apt.doctorName)}
                               </div>
                             )}
                             <div className="min-w-0">
