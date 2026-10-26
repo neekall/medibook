@@ -6,10 +6,11 @@ interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
     title: string;
+    subtitle?: string;
     children: ReactNode;
 }
 
-export const Modal: FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
+export const Modal: FC<ModalProps> = ({ isOpen, onClose, title, subtitle, children }) => {
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') onClose();
@@ -29,23 +30,33 @@ export const Modal: FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
     if (!isOpen) return null;
 
     return createPortal(
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+            {/* Backdrop with clinical blur */}
             <div
-                className="fixed inset-0"
+                className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity duration-200 animate-in fade-in"
                 onClick={onClose}
                 aria-hidden="true"
             />
-            <div className="relative w-full max-w-md bg-white rounded-lg shadow-lg z-10 p-6 overflow-hidden">
-                <div className="flex items-center justify-between pb-3 border-b">
-                    <h3 className="text-lg font-semibold text-slate-800">{title}</h3>
+
+            {/* Modal Card with smooth scale-in */}
+            <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-200/80 z-10 overflow-hidden transform transition-all duration-200 ease-out">
+                {/* Header */}
+                <div className="px-6 py-4.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                    <div>
+                        <h3 className="text-base sm:text-lg font-semibold text-slate-900 tracking-tight">{title}</h3>
+                        {subtitle && <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>}
+                    </div>
                     <button
                         onClick={onClose}
-                        className="p-1 rounded text-slate-400 hover:text-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                        className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        aria-label="დახურვა"
                     >
-                        <X size={20} />
+                        <X size={18} />
                     </button>
                 </div>
-                <div className="mt-4">{children}</div>
+
+                {/* Content */}
+                <div className="p-6">{children}</div>
             </div>
         </div>,
         document.body
