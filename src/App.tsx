@@ -60,8 +60,8 @@ export default function App() {
     return () => clearTimeout(timer);
   }, [toast]);
 
-  // Debounced საძიებო სიტყვა (250ms)
-  const debouncedSearch = useDebounce(searchTerm, 250);
+  // Debounced საძიებო სიტყვა (300ms)
+  const debouncedSearch = useDebounce(searchTerm, 300);
 
   // გაფილტვრა useMemo-თი
   const filteredDoctors = useMemo(() => {
