@@ -31,7 +31,7 @@ export const INITIAL_DOCTORS: Doctor[] = [
         experience: '15 წელი',
         clinic: 'იაშვილის სახელობის ბავშვთა კლინიკა',
         location: 'თბილისი, დიღომი',
-        avatar: 'https://images.unsplash.com/photo-1594824813583-470072b7a972?auto=format&fit=crop&w=600&q=80',
+        avatar: 'https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg?auto=compress&cs=tinysrgb&w=600',
         availableSlots: ['11:00', '13:00', '14:30', '16:30'],
     },
     {
