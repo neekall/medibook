@@ -162,13 +162,13 @@ export default function App() {
       {/* Header */}
       <header className="sticky top-0 z-30 bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          {/* Logo */}
+          {/* Brand Logo */}
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
-              <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current" aria-hidden="true">
-                <path d="M10.5 4a1.5 1.5 0 0 1 3 0v5.5H19a1.5 1.5 0 0 1 0 3h-5.5V18a1.5 1.5 0 0 1-3 0v-5.5H5a1.5 1.5 0 0 1 0-3h5.5V4z" />
-              </svg>
-            </div>
+            <img
+              src="/logo.png"
+              alt="MediBook"
+              className="h-9 w-auto object-contain"
+            />
             <span className="text-lg font-bold tracking-tight text-slate-900">MediBook</span>
           </div>
 
@@ -509,10 +509,9 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-auto border-t border-slate-200 bg-white py-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
-          <p>MediBook - სამედიცინო ჯავშნების სისტემა</p>
-          <p>დამზადებულია React 19 & TypeScript-ზე</p>
+      <footer className="mt-auto border-t border-slate-200 bg-white py-5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center text-xs text-slate-500">
+          <p>© 2026 MediBook</p>
         </div>
       </footer>
 

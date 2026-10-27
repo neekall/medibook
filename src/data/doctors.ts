@@ -97,7 +97,7 @@ export const INITIAL_DOCTORS: Doctor[] = [
         experience: '12 წელი',
         clinic: 'კავკასიის მედიცინის ცენტრი',
         location: 'თბილისი, საბურთალო',
-        avatar: 'https://images.unsplash.com/photo-1651008376811-b90baee60c1f?auto=format&fit=crop&q=80&w=600',
+        avatar: 'https://images.unsplash.com/photo-1651008376811-b90baee60c1f?auto=format&fit=crop&w=600&q=80',
         availableSlots: ['10:30', '13:00', '15:30', '16:30'],
     },
 ];
