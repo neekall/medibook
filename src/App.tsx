@@ -13,7 +13,7 @@ import {
   Edit2,
   Check,
 } from 'lucide-react';
-import { INITIAL_DOCTORS, SPECIALTIES } from './data/doctors';
+import { INITIAL_DOCTORS, SPECIALTIES, DEFAULT_AVATAR } from './data/doctors';
 import type { Doctor, Appointment, BookingFormData, ToastNotification } from './types';
 import { useDebounce } from './hooks/useDebounce';
 import { Modal } from './components/Modal';
@@ -316,8 +316,12 @@ export default function App() {
                       <img
                         src={doc.avatar}
                         alt={doc.name}
-                        className="w-full h-full object-cover object-[center_20%]"
+                        className="w-full h-56 object-cover object-top"
                         loading="lazy"
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = DEFAULT_AVATAR;
+                        }}
                       />
                       <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 bg-white/95 rounded text-xs font-bold text-slate-800 shadow-sm border border-slate-200">
                         <span className="text-amber-500">★</span>
@@ -431,7 +435,11 @@ export default function App() {
                               <img
                                 src={apt.doctorAvatar}
                                 alt={apt.doctorName}
-                                className="w-8 h-8 rounded-lg object-cover object-[center_20%] ring-1 ring-slate-200 shrink-0"
+                                className="w-8 h-8 rounded-lg object-cover ring-1 ring-slate-200 shrink-0"
+                                onError={(e) => {
+                                  e.currentTarget.onerror = null;
+                                  e.currentTarget.src = DEFAULT_AVATAR;
+                                }}
                               />
                             ) : (
                               <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-xs shrink-0">

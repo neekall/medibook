@@ -1,6 +1,7 @@
 import { useState, type FC, type FormEvent, type ChangeEvent } from 'react';
 import { Calendar, Clock, Phone, User, Check, AlertCircle } from 'lucide-react';
 import type { Doctor, BookingFormData } from '../types';
+import { DEFAULT_AVATAR } from '../data/doctors';
 
 interface BookingFormProps {
     doctor: Doctor;
@@ -72,7 +73,11 @@ export const BookingForm: FC<BookingFormProps> = ({
                 <img
                     src={doctor.avatar}
                     alt={doctor.name}
-                    className="w-12 h-12 rounded-lg object-cover object-[center_20%] ring-1 ring-slate-200 shrink-0"
+                    className="w-12 h-12 rounded-lg object-cover object-top ring-1 ring-slate-200 shrink-0"
+                    onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = DEFAULT_AVATAR;
+                    }}
                 />
                 <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-2">
