@@ -1,6 +1,6 @@
-# MediBook — სამედიცინო ვიზიტების მართვის სისტემა
+# MediBook - სამედიცინო ვიზიტების მართვის სისტემა
 
-**Live Demo:** [https://medibook-project1.vercel.app]
+**Live Demo:** [https://medibook-project1.vercel.app](https://medibook-project1.vercel.app)
 **კატეგორია:** სამედიცინო ჰაბი
 
 ---
@@ -63,10 +63,10 @@ src/
 
 ## 7. ხელმისაწვდომი სკრიპტები
 
-- `npm run dev` — დეველოპერული სერვერის გაშვება ლოკალურად.
-- `npm run build` — ოპტიმიზებული საწარმოო (Production) ბანდლის აწყობა.
-- `npm run preview` — აწყობილი Production ვერსიის ლოკალურად შემოწმება.
-- `npm run lint` — კოდის ხარისხისა და სისუფთავის შემოწმება ESLint-ით.
+- `npm run dev` - დეველოპერული სერვერის გაშვება ლოკალურად.
+- `npm run build` - ოპტიმიზებული საწარმოო (Production) ბანდლის აწყობა.
+- `npm run preview` - აწყობილი Production ვერსიის ლოკალურად შემოწმება.
+- `npm run lint` - კოდის ხარისხისა და სისუფთავის შემოწმება ESLint-ით.
 
 ---
 **ავტორი:** ნიკა ნიკოლაიშვილი - [GitHub პროფილი](https://github.com/neekall)

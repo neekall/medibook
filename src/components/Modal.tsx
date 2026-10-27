@@ -38,8 +38,8 @@ export const Modal: FC<ModalProps> = ({ isOpen, onClose, title, subtitle, childr
                 aria-hidden="true"
             />
 
-            {/* Modal Card with smooth scale-in */}
-            <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-200/80 z-10 overflow-hidden transform transition-all duration-200 ease-out">
+            {/* Modal Card */}
+            <div className="relative w-full max-w-lg bg-white rounded-xl shadow-xl border border-slate-200 z-10 overflow-hidden transform transition-all duration-200 ease-out">
                 {/* Header */}
                 <div className="px-6 py-4.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                     <div>

@@ -9,7 +9,7 @@ export const INITIAL_DOCTORS: Doctor[] = [
         experience: '12 წელი',
         clinic: 'თბილისის გულის ცენტრი',
         location: 'თბილისი, ვაკე',
-        avatar: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=600',
+        avatar: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=800',
         availableSlots: ['10:00', '11:30', '14:00', '16:00'],
     },
     {
@@ -20,7 +20,7 @@ export const INITIAL_DOCTORS: Doctor[] = [
         experience: '9 წელი',
         clinic: 'ნეირომედ კლინიკა',
         location: 'თბილისი, საბურთალო',
-        avatar: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=600',
+        avatar: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=800',
         availableSlots: ['09:30', '12:00', '15:30', '17:00'],
     },
     {
@@ -31,7 +31,7 @@ export const INITIAL_DOCTORS: Doctor[] = [
         experience: '15 წელი',
         clinic: 'იაშვილის სახელობის ბავშვთა კლინიკა',
         location: 'თბილისი, დიღომი',
-        avatar: 'https://images.unsplash.com/photo-1622902046580-2b47f47f5471?auto=format&fit=crop&q=80&w=600',
+        avatar: 'https://images.unsplash.com/photo-1622902046580-2b47f47f5471?auto=format&fit=crop&q=80&w=800',
         availableSlots: ['11:00', '13:00', '14:30', '16:30'],
     },
     {
@@ -42,7 +42,7 @@ export const INITIAL_DOCTORS: Doctor[] = [
         experience: '11 წელი',
         clinic: 'ენდოკრინოლოგიის ეროვნული ინსტიტუტი',
         location: 'თბილისი, ვერა',
-        avatar: 'https://images.unsplash.com/photo-1651008376811-b90baee60c1f?auto=format&fit=crop&q=80&w=600',
+        avatar: 'https://images.unsplash.com/photo-1594824813587-118f6f59846e?auto=format&fit=crop&q=80&w=800',
         availableSlots: ['10:00', '12:30', '15:00', '17:30'],
     },
     {
@@ -53,7 +53,7 @@ export const INITIAL_DOCTORS: Doctor[] = [
         experience: '8 წელი',
         clinic: 'ევექსი ჰოსპიტალი',
         location: 'თბილისი, მთაწმინდა',
-        avatar: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=600',
+        avatar: 'https://images.unsplash.com/photo-1625134673337-519d4d10b313?auto=format&fit=crop&q=80&w=800',
         availableSlots: ['10:30', '13:30', '16:00', '18:00'],
     },
     {
@@ -64,7 +64,7 @@ export const INITIAL_DOCTORS: Doctor[] = [
         experience: '14 წელი',
         clinic: 'ორთოპედიისა და ტრავმატოლოგიის ცენტრი',
         location: 'თბილისი, ისანი',
-        avatar: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&q=80&w=600',
+        avatar: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&q=80&w=800',
         availableSlots: ['09:00', '11:00', '14:00', '16:30'],
     },
     {
@@ -75,7 +75,7 @@ export const INITIAL_DOCTORS: Doctor[] = [
         experience: '10 წელი',
         clinic: 'თვალის ეროვნული კლინიკა',
         location: 'თბილისი, ჩუღურეთი',
-        avatar: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=600',
+        avatar: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&q=80&w=800',
         availableSlots: ['09:30', '11:00', '14:30', '16:00'],
     },
     {
@@ -86,7 +86,7 @@ export const INITIAL_DOCTORS: Doctor[] = [
         experience: '13 წელი',
         clinic: 'კანისა და ვენსნეულებათა ინსტიტუტი',
         location: 'თბილისი, ვაკე',
-        avatar: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=600',
+        avatar: 'https://images.unsplash.com/photo-1645066928295-2506defde470?auto=format&fit=crop&q=80&w=800',
         availableSlots: ['10:00', '12:00', '15:00', '17:30'],
     },
     {
@@ -97,7 +97,7 @@ export const INITIAL_DOCTORS: Doctor[] = [
         experience: '12 წელი',
         clinic: 'კავკასიის მედიცინის ცენტრი',
         location: 'თბილისი, საბურთალო',
-        avatar: 'https://images.unsplash.com/photo-1527613426441-4da17471b66d?auto=format&fit=crop&q=80&w=600',
+        avatar: 'https://images.unsplash.com/photo-1659353888906-adb3e0041693?auto=format&fit=crop&q=80&w=800',
         availableSlots: ['10:30', '13:00', '15:30', '16:30'],
     },
 ];

@@ -312,11 +312,11 @@ export default function App() {
                 >
                   <div>
                     {/* Portrait & Rating */}
-                    <div className="relative h-44 w-full rounded-lg overflow-hidden bg-slate-100 mb-3 border border-slate-100">
+                    <div className="relative h-56 w-full rounded-lg overflow-hidden bg-slate-100 mb-3 border border-slate-100">
                       <img
                         src={doc.avatar}
                         alt={doc.name}
-                        className="w-full h-full object-cover object-top"
+                        className="w-full h-full object-cover object-[center_20%]"
                         loading="lazy"
                       />
                       <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 bg-white/95 rounded text-xs font-bold text-slate-800 shadow-sm border border-slate-200">
@@ -385,7 +385,7 @@ export default function App() {
           <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
             <div>
               <h2 className="text-base sm:text-lg font-bold text-slate-900">ჩემი ჯავშნები</h2>
-              <p className="text-xs text-slate-500">თქვენს მიერ დაჯავშნილი ვიზიტების სია</p>
+              <p className="text-xs text-slate-500">თქვენ მიერ დაჯავშნილი ვიზიტების სია</p>
             </div>
             <span className="text-xs font-semibold px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
               {appointments.length} ჯავშანი
@@ -431,7 +431,7 @@ export default function App() {
                               <img
                                 src={apt.doctorAvatar}
                                 alt={apt.doctorName}
-                                className="w-8 h-8 rounded-lg object-cover ring-1 ring-slate-200 shrink-0"
+                                className="w-8 h-8 rounded-lg object-cover object-[center_20%] ring-1 ring-slate-200 shrink-0"
                               />
                             ) : (
                               <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-xs shrink-0">
@@ -503,7 +503,7 @@ export default function App() {
       {/* Footer */}
       <footer className="mt-auto border-t border-slate-200 bg-white py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
-          <p>MediBook — სამედიცინო ჯავშნების სისტემა</p>
+          <p>MediBook - სამედიცინო ჯავშნების სისტემა</p>
           <p>დამზადებულია React 19 & TypeScript-ზე</p>
         </div>
       </footer>
